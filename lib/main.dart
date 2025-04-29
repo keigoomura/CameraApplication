@@ -49,6 +49,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Make animated Welcome text 
               AnimatedTextKit(
                 animatedTexts: [
                   ColorizeAnimatedText(
@@ -69,6 +70,7 @@ class HomeScreen extends StatelessWidget {
                 repeatForever: true,        
               ),
               const SizedBox(height: 32),
+              // Add button to preview camera
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
@@ -94,7 +96,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 
-// Screen to take picture using given camera
+// Camera preview screen that allows users to take a picture as well
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({super.key, required this.camera});
 
@@ -199,6 +201,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           }
         },
         child: Column(
+          // Icon and label for button
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Icon(Icons.camera_alt),
@@ -239,6 +242,7 @@ class DisplayPictureScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 24.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
+                  // If on web, load image bytes
                   child: kIsWeb
                       ? FutureBuilder<Uint8List>(
                           future: _loadImageBytes(imagePath),
@@ -257,6 +261,7 @@ class DisplayPictureScreen extends StatelessWidget {
                             }
                           },
                         )
+                      // If not on web, load image from file
                       : Image.file(File(imagePath)),
                 ),
               ),
@@ -269,8 +274,8 @@ class DisplayPictureScreen extends StatelessWidget {
           // Back to Home button
           Navigator.of(context).popUntil((route) => route.isFirst);
         },
-        child: const Icon(Icons.home),
         tooltip: 'Go Home',
+        child: const Icon(Icons.home),
       ),
     );
   }
