@@ -35,8 +35,6 @@ class DBProvider {
       CREATE TABLE companies(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        address TEXT NOT NULL,
-        createdAt TEXT NOT NULL
       )
     ''');
 
