@@ -1,9 +1,8 @@
-import 'package:sqflite/sqflite.dart';
 import '../models/check_invoices.dart';
 import 'db_provider.dart';
 
 // CRUD operations for CheckInvoices
-class CheckInvoicesCRUD {
+class CheckInvoicesCrud {
   
   // Create and insert a new CheckInvoice
   Future<CheckInvoices> createCheckInvoice(CheckInvoices checkInvoice) async {
@@ -11,6 +10,17 @@ class CheckInvoicesCRUD {
     final id = await db.insert('checkInvoices', checkInvoice.toMap());
     checkInvoice.id = id;
     return checkInvoice;
+  }
+
+  // Query all CheckInvoices
+  Future<List<CheckInvoices>> getAllCheckInvoices() async {
+    final db = await DBProvider.instance.database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'checkInvoices',
+      columns: ['id', 'checkId', 'invoiceId'],
+      orderBy: 'id DESC',
+    );
+    return result.map((map) => CheckInvoices.fromMap(map)).toList();
   }
 
   // Query all invoices linked to a specific check

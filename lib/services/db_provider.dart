@@ -1,11 +1,19 @@
 // lib/services/db_provider.dart
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../services/companies_crud.dart';
+import '../services/checks_crud.dart';
+import '../services/check_invoices_crud.dart';
+import '../services/invoices_crud.dart';
 
 // Database provider class
 class DBProvider {
   DBProvider._();
   static final DBProvider instance = DBProvider._();
+  final CompaniesCrud companies = CompaniesCrud();
+  final ChecksCrud checks = ChecksCrud();
+  final InvoicesCrud invoices = InvoicesCrud();
+  final CheckInvoicesCrud checkInvoices = CheckInvoicesCrud();
 
   Database? _database;
 
@@ -34,7 +42,7 @@ class DBProvider {
     await db.execute('''
       CREATE TABLE companies(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        name TEXT NOT NULL
       )
     ''');
 
@@ -64,10 +72,11 @@ class DBProvider {
     // Create CheckInvoices tables
     await db.execute('''
       CREATE TABLE checkInvoices(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         checkId INTEGER NOT NULL,
         invoiceId INTEGER NOT NULL,
-        FOREIGN KEY (check_id) REFERENCES checks(id),
-        FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+        FOREIGN KEY (checkId) REFERENCES checks(id),
+        FOREIGN KEY (invoiceId) REFERENCES invoices(id)
       )
     ''');
   }

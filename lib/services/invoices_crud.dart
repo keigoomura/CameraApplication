@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../models/invoices.dart';
 import 'db_provider.dart';
 
@@ -10,6 +9,17 @@ class InvoicesCrud {
     final id = await db.insert('invoices', invoice.toMap());
     invoice.id = id;
     return invoice;
+  }
+
+  // Query all invoices
+  Future<List<Invoices>> getAllInvoices() async {
+    final db = await DBProvider.instance.database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'invoices',
+      columns: ['id', 'number', 'companyId', 'createdAt'],
+      orderBy: 'createdAt DESC',
+    );
+    return result.map((map) => Invoices.fromMap(map)).toList();
   }
 
   // Query an invoice by its ID

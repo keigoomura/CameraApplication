@@ -107,7 +107,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           } 
           catch (e) {
             // Catch and throw error
-            print(e);
+            debugPrint('DB Error: $e');
           }
         },
         child: Column(

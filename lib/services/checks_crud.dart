@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../models/checks.dart';
 import 'db_provider.dart';
 
@@ -10,6 +9,17 @@ class ChecksCrud {
     final id = await db.insert('checks', check.toMap());
     check.id = id;
     return check;
+  }
+
+  // Query all checks
+  Future<List<Checks>> getAllChecks() async {
+    final db = await DBProvider.instance.database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'checks',
+      columns: ['id', 'image', 'number', 'companyId', 'createdAt'],
+      orderBy: 'createdAt DESC',
+    );
+    return result.map((map) => Checks.fromMap(map)).toList();
   }
 
   // Query checks by their ID

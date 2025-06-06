@@ -22,8 +22,8 @@ class Checks {
     id: map['id'] as int?,
     image: map['image'] as String,
     number: map['number'] as int,
-    companyId: map['company_id'] as int,
-    createdAt: DateTime.parse(map['created_at'] as String),
+    companyId: map['companyId'] as int,
+    createdAt: DateTime.parse(map['createdAt'] as String),
   );
   
   // Convert a User to a Map for sqflite
@@ -31,8 +31,8 @@ class Checks {
     'id': id,
     'image': image,
     'number': number,
-    'company_id': companyId,
-    'created_at': createdAt.toIso8601String(),
+    'companyId': companyId,
+    'createdAt': createdAt.toIso8601String(),
   };
 
   @override

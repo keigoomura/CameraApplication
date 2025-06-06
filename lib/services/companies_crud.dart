@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../models/companies.dart';
 import 'db_provider.dart';
 
@@ -11,6 +10,17 @@ class CompaniesCrud {
     final id = await db.insert('companies', company.toMap());
     company.id = id;
     return company;
+  }
+
+  // Query all companies
+  Future<List<Companies>> getAllCompanies() async {
+    final db = await DBProvider.instance.database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'companies',
+      columns: ['id', 'name'],
+      orderBy: 'name ASC',
+    );
+    return result.map((map) => Companies.fromMap(map)).toList();
   }
 
   // Query a company by its ID
