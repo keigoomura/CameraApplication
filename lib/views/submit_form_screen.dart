@@ -1,18 +1,25 @@
+// lib/views/submit_form_screen.dart
+
+// Imports
+import 'submission_confirmation_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/checks.dart';
 import '../models/companies.dart';
+
 import '../models/invoices.dart';
 import '../models/check_invoices.dart';
 import '../services/db_provider.dart';
 
-class AddCheckPage extends StatefulWidget {
-  const AddCheckPage({super.key});
+import 'take_picture_screen.dart';
+
+class SubmitFormPage extends StatefulWidget {
+  const SubmitFormPage({super.key});
 
   @override
-  AddCheckPageState createState() => AddCheckPageState();
+  SubmitFormPageState createState() => SubmitFormPageState();
 }
 
-class AddCheckPageState extends State<AddCheckPage> {
+class SubmitFormPageState extends State<SubmitFormPage> {
   final _companyNameController = TextEditingController();
   final _checkNumberController = TextEditingController();
   final _invoicesController = TextEditingController();
@@ -27,27 +34,35 @@ class AddCheckPageState extends State<AddCheckPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: ElevatedButton(
-            //         onPressed: () {
-            //           // Implement image capture logic here
-            //         },
-            //         child: const Text('Capture Image'),
-            //       ),
-            //     ),
-            //     const SizedBox(width: 8),
-            //     Container(
-            //       width: 40,
-            //       height: 40,
-            //       color: Colors.grey[300],
-            //       child: _imagePath == null
-            //           ? const Icon(Icons.image_not_supported)
-            //           : Image.asset(_imagePath!),
-            //     )
-            //   ],
-            // ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final imagePath = await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(builder: (context) => const TakePictureScreen()),
+                      );
+                      if (imagePath != null && mounted) {
+                        setState(() {
+                          _imagePath = imagePath;
+                        });
+                      }
+                    },
+                    child: const Text('Capture Image'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  width: 40,
+                  height: 40,
+                  color: Colors.grey[300],
+                  child: _imagePath == null
+                      ? const Icon(Icons.image_not_supported)
+                      : Image.asset(_imagePath!),
+                )
+              ],
+            ),
             const SizedBox(height: 20),
             const Align(
               alignment: Alignment.centerLeft,
@@ -88,7 +103,14 @@ class AddCheckPageState extends State<AddCheckPage> {
                 final checkNumber = int.tryParse(_checkNumberController.text.trim());
                 final invoiceText = _invoicesController.text.trim();
 
-                if (companyName.isEmpty || checkNumber == null || invoiceText.isEmpty) {
+                // Validate inputs
+                if (checkNumber == null || checkNumber <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a valid check number')),
+                  );
+                  return;
+                }
+                if(companyName.isEmpty || invoiceText.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please fill all fields')),
                   );
@@ -130,7 +152,12 @@ class AddCheckPageState extends State<AddCheckPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Check submitted successfully:')),
                     );
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SubmissionConfirmationPage(invoice: invoice),
+                      ),
+                    );
                   }
                 } 
                 catch (e) {

@@ -3,21 +3,26 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-import 'views/home_screen.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-late final CameraDescription firstCamera;
+import 'views/home_screen.dart';
 
 Future<void> main() async {
   // Initialize the camera plugin
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Get list of available cameras on device.
-  final cameras = await availableCameras();
-
-  // Get a specific camera from the list of available cameras.
-  firstCamera = cameras.first;
+  // Clearing database
+  // await deleteDatabaseFile();
 
   runApp(const MyApp());
+}
+
+// Temp code to delete the database file (dev only)
+Future<void> deleteDatabaseFile() async {
+  final dbPath = await getDatabasesPath();
+  final path = join(dbPath, 'camera_app_database.db');
+  await deleteDatabase(path);
 }
 
 class MyApp extends StatelessWidget {
@@ -31,9 +36,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 54, 191, 127)),
         ),
       title: 'Keigo\'s Camera App',
-      home: HomeScreen(
-        camera: firstCamera,
-      ),
+      home: HomeScreen(),
     );
   }
 }

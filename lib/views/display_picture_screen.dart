@@ -1,3 +1,5 @@
+// lib/views/display_picture_screen.dart
+
 // Imports
 import 'dart:async';
 import 'dart:io';

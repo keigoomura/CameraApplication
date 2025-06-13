@@ -1,15 +1,17 @@
+// lib/views/home_screen.dart
+
 // Imports
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
+import 'submit_form_screen.dart'; 
+import 'view_data_screen.dart';
 import 'take_picture_screen.dart';
 
 // Homescreen 
 class HomeScreen extends StatelessWidget {
-  final CameraDescription camera;
 
-  const HomeScreen({super.key, required this.camera});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +49,50 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TakePictureScreen(camera: camera),
+                      builder: (context) => TakePictureScreen(),
                     ),
                   );
                 },
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Take a Picture'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Add Invoice Form Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SubmitFormPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Submit a New Check'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Add View Tables Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ViewDataPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.table_chart),
+                label: const Text('View Data'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),

@@ -1,3 +1,5 @@
+// lib/views/take_picture_screen.dart
+
 // Imports
 import 'dart:async';
 
@@ -8,9 +10,7 @@ import 'display_picture_screen.dart';
 
 // Camera preview screen that allows users to take a picture as well
 class TakePictureScreen extends StatefulWidget {
-  const TakePictureScreen({super.key, required this.camera});
-
-  final CameraDescription camera;
+  const TakePictureScreen({super.key});
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -18,24 +18,30 @@ class TakePictureScreen extends StatefulWidget {
 
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  Future<void>? _initializeControllerFuture;
+  CameraDescription? _camera;
 
   @override
   void initState() {
     super.initState();
-    // Show what camera currently sees
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    _camera = cameras.first;
+
     _controller = CameraController(
-      widget.camera,
+      _camera!,
       ResolutionPreset.high,
     );
 
-    // Initialize controller
     _initializeControllerFuture = _controller.initialize();
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    // Dispose of controller when widget is disposed.
     _controller.dispose();
     super.dispose();
   }
@@ -45,7 +51,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Back to Home')),
       // Add a preview widget to show what the camera sees, 
-      body: FutureBuilder<void>(
+      body: _initializeControllerFuture == null ? const Center(child: CircularProgressIndicator()) : FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           // If controller is initialized, display the camera preview.
@@ -83,7 +89,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ),
       // Button for taking picture
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
+        onPressed: _initializeControllerFuture == null ? null : () async {
           // Try taking a picture, throw error if it fails
           try {
             // Wait until camera controller is initialized
