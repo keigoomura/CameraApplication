@@ -1,6 +1,8 @@
 // lib/views/submit_form_screen.dart
 
 // Imports
+import 'dart:io';
+
 import 'submission_confirmation_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/checks.dart';
@@ -29,7 +31,14 @@ class SubmitFormPageState extends State<SubmitFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Back')),
+      appBar: AppBar(title: const Text('Back to Home'), 
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.popUntil(context, (route) => route.isFirst); // Go back to home
+          },
+        )
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -47,6 +56,8 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                         setState(() {
                           _imagePath = imagePath;
                         });
+
+                        debugPrint('Received image path: $_imagePath');
                       }
                     },
                     child: const Text('Capture Image'),
@@ -54,15 +65,26 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  width: 40,
-                  height: 40,
-                  color: Colors.grey[300],
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: _imagePath == null
                       ? const Icon(Icons.image_not_supported)
-                      : Image.asset(_imagePath!),
-                )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(
+                            File(_imagePath!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                          ),
+                        ),
+                ),
               ],
             ),
+
             const SizedBox(height: 20),
             const Align(
               alignment: Alignment.centerLeft,
@@ -104,6 +126,12 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                 final invoiceText = _invoicesController.text.trim();
 
                 // Validate inputs
+                if (_imagePath == null || _imagePath!.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please capture an image')),
+                  );
+                  return;
+                }
                 if (checkNumber == null || checkNumber <= 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please enter a valid check number')),
@@ -155,7 +183,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SubmissionConfirmationPage(invoice: invoice),
+                        builder: (context) => SubmissionConfirmationPage(invoice: invoice, imagePath: _imagePath ?? ''),
                       ),
                     );
                   }

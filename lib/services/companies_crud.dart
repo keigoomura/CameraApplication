@@ -7,9 +7,18 @@ class CompaniesCrud {
   // Create and insert a new Company
   Future<Companies> createCompany(Companies company) async {
     final db = await DBProvider.instance.database;
-    final id = await db.insert('companies', company.toMap());
-    company.id = id;
-    return company;
+
+    // Check if the company already exists, if it does, return the existing ID
+    final existingCompany = await getCompanyByName(company.name);
+    if (existingCompany != null) {
+      company.id = existingCompany.id;
+      return company;
+    }
+    else{
+      final id = await db.insert('companies', company.toMap());
+      company.id = id;
+      return company;
+    }
   }
 
   // Query all companies

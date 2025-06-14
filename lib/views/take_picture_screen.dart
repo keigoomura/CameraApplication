@@ -49,7 +49,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Back to Home')),
+      appBar: AppBar(title: const Text('Back')),
       // Add a preview widget to show what the camera sees, 
       body: _initializeControllerFuture == null ? const Center(child: CircularProgressIndicator()) : FutureBuilder<void>(
         future: _initializeControllerFuture,
@@ -100,16 +100,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             if (!context.mounted) return;
 
-            // Display picture on different screen
-            await Navigator.of(context).push(
+            final returnedPath = await Navigator.of(context).push<String>(
               MaterialPageRoute(
-                builder:
-                    (context) => DisplayPictureScreen(
-                      // Give image path to screen
-                      imagePath: image.path,
-                    ),
+                builder: (context) => DisplayPictureScreen(imagePath: image.path),
               ),
             );
+
+            if (returnedPath != null && mounted) { 
+              await _controller.dispose(); 
+              Navigator.pop(context, returnedPath); // Return to SubmitFormPage
+            }
           } 
           catch (e) {
             // Catch and throw error

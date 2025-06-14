@@ -6,7 +6,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'submit_form_screen.dart'; 
 import 'view_data_screen.dart';
-import 'take_picture_screen.dart';
+import 'companies_list.dart';
+import 'checks_list.dart';
+import 'invoice_list.dart';
 
 // Homescreen 
 class HomeScreen extends StatelessWidget {
@@ -43,24 +45,6 @@ class HomeScreen extends StatelessWidget {
                 repeatForever: true,        
               ),
               const SizedBox(height: 32),
-              // Add button to preview camera
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TakePictureScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.camera_alt),
-                label: const Text('Take a Picture'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-              const SizedBox(height: 16),
 
               // Add Invoice Form Button
               ElevatedButton.icon(
@@ -93,6 +77,64 @@ class HomeScreen extends StatelessWidget {
                 },
                 icon: const Icon(Icons.table_chart),
                 label: const Text('View Data'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Add Companies List Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CompaniesListPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.business),
+                label: const Text('View Companies'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Add Checks List Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ChecksListPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.check),
+                label: const Text('View Checks'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              // Add Invoices List Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const InvoicesListPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.receipt),
+                label: const Text('View Invoices'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),
