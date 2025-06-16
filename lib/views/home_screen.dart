@@ -9,8 +9,8 @@ import 'view_data_screen.dart';
 import 'companies_list.dart';
 import 'checks_list.dart';
 import 'invoice_list.dart';
+import 'search_page.dart';
 
-// Homescreen 
 class HomeScreen extends StatelessWidget {
 
   const HomeScreen({super.key});
@@ -135,6 +135,25 @@ class HomeScreen extends StatelessWidget {
                 },
                 icon: const Icon(Icons.receipt),
                 label: const Text('View Invoices'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              // Search Page Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SearchPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.search),
+                label: const Text('Search'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   textStyle: const TextStyle(fontSize: 18),

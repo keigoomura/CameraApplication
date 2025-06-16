@@ -1,5 +1,8 @@
 // lib/views/submit_form_screen.dart
 
+// A form to allow users to submit checks with associated companies, invoices, and image of the check
+// Stores the data in a database
+
 // Imports
 import 'dart:io';
 
@@ -46,6 +49,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
             Row(
               children: [
                 Expanded(
+                  // Allows user to capture an image using the camera
                   child: ElevatedButton(
                     onPressed: () async {
                       final imagePath = await Navigator.push<String>(
@@ -64,6 +68,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
+                // Displays the captured image or a placeholder if no image is captured
                 Container(
                   width: 60,
                   height: 60,
@@ -85,6 +90,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
               ],
             ),
 
+            // Invoice Number(s) Field
             const SizedBox(height: 20),
             const Align(
               alignment: Alignment.centerLeft,
@@ -99,6 +105,13 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+
+            // Company Name Field (may change to dropdown in the future)
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Company', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _companyNameController,
@@ -107,15 +120,24 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+
+            // Check Number Field
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Check Number', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: _checkNumberController,
               decoration: const InputDecoration(
-                labelText: 'Check #',
+                labelText: 'Check Number',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
             ),
+
+            // Submission Button
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () async{
@@ -150,7 +172,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   final company = Companies(name: companyName);
                   final createdCompany = await db.companies.createCompany(company);
 
-                  // // Insert Check with correct companyId
+                  // Insert Check
                   final check = Checks(
                     image: _imagePath ?? '',
                     number: checkNumber,
@@ -159,7 +181,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   );
                   final checkId = await db.checks.createCheck(check);
 
-                  // // Insert Invoice
+                  // Insert Invoice
                   final invoice = Invoices(
                     number: checkNumber,
                     companyId: createdCompany.id!,
@@ -167,7 +189,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   );
                   final invoiceId = await db.invoices.createInvoice(invoice);
 
-                  // // Insert CheckInvoices
+                  // Insert CheckInvoices
                   final checkInvoice = CheckInvoices(
                     checkId: checkId.id!,
                     invoiceId: invoiceId.id!,
@@ -175,7 +197,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   await db.checkInvoices.createCheckInvoice(checkInvoice);
 
 
-                  // Success feedback
+                  // Show success message and navigate to confirmation page
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Check submitted successfully:')),

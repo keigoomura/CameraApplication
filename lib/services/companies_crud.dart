@@ -1,7 +1,9 @@
+// lib/services/companies_crud.dart
+
 import '../models/companies.dart';
 import 'db_provider.dart';
 
-// CRUD operations for Checks
+// CRUD operations for Companies
 class CompaniesCrud {
   
   // Create and insert a new Company

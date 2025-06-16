@@ -1,5 +1,8 @@
 // lib/views/checks_list.dart
 
+// Displays a table of checks with date/time created, company, check number, invoices, and image
+// Allows users to view check images in a dialog
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/checks.dart';
@@ -40,6 +43,7 @@ class ChecksListPageState extends State<ChecksListPage> {
 
     final List<CheckDisplayData> enrichedChecks = [];
 
+    // Get company names and invoice numbers for each check
     for (final check in checks) {
       final company = await db.companies.getCompanyById(check.companyId);
       final invoiceLinks = await db.checkInvoices.getCheckInvoicesByCheck(check.id!);
@@ -63,6 +67,7 @@ class ChecksListPageState extends State<ChecksListPage> {
     return enrichedChecks;
   }
 
+  // Show image in a dialog
   void _showImageDialog(String imagePath) {
     showDialog(
       context: context,
@@ -107,7 +112,7 @@ class ChecksListPageState extends State<ChecksListPage> {
                   ],
                   rows: snapshot.data!.map((entry) {
                     return DataRow(cells: [
-                      DataCell(Text(entry.check.createdAt.toLocal().toString().split(' ')[0])),
+                      DataCell(Text(entry.check.createdAt.toLocal().toString().split('.')[0],),),
                       DataCell(Text(entry.companyName)),
                       DataCell(Text(entry.check.number.toString())),
                       DataCell(Text(entry.invoiceNumbers.join(', '))),

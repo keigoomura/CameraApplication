@@ -1,5 +1,7 @@
 // lib/views/view_tables_screen.dart
 
+// Temporary view to display all data from the database, used for debugging purposes
+
 // Imports
 import 'package:flutter/material.dart';
 import '../services/db_provider.dart';
@@ -50,17 +52,20 @@ class ViewDataPageState extends State<ViewDataPage> {
               child: CircularProgressIndicator(),
             )],
           );
-        } else if (snapshot.hasError) {
+        } 
+        else if (snapshot.hasError) {
           return ExpansionTile(
             title: Text(title),
             children: [ListTile(title: Text('Error: ${snapshot.error}'))],
           );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } 
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return ExpansionTile(
             title: Text(title),
             children: [const ListTile(title: Text('No data found.'))],
           );
-        } else {
+        } 
+        else {
           return ExpansionTile(
             title: Text(title),
             children: snapshot.data!.map((item) {

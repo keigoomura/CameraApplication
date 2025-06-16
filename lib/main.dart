@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 54, 191, 127)),
         ),
-      title: 'Keigo\'s Camera App',
+      title: 'Telaeris Checks and Invoices',
       home: HomeScreen(),
     );
   }

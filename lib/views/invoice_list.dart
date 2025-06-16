@@ -1,5 +1,7 @@
 // lib/views/invoice_list.dart
 
+// Displays a table of invoices with company names and associated check numbers
+
 import 'package:flutter/material.dart';
 import '../models/invoices.dart';
 import '../services/db_provider.dart';
@@ -73,17 +75,20 @@ class _InvoicesListPageState extends State<InvoicesListPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
+          } 
+          else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } 
+          else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text("No invoices found."));
-          } else {
+          } 
+          else {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(Colors.grey[300]),
+                  headingRowColor: WidgetStateProperty.all(Colors.grey[300]),
                   columns: const [
                     DataColumn(label: Text('Invoice #', style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(label: Text('Company', style: TextStyle(fontWeight: FontWeight.bold))),

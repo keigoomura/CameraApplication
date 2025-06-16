@@ -1,5 +1,7 @@
 // lib/views/companies_list.dart
 
+// Displays a table of companies with their names
+
 import 'package:flutter/material.dart';
 import '../models/companies.dart';
 import '../services/db_provider.dart';

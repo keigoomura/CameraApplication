@@ -1,5 +1,7 @@
 // lib/views/take_picture_screen.dart
 
+// Camera preview screen that allows users to take a picture
+
 // Imports
 import 'dart:async';
 
@@ -8,7 +10,6 @@ import 'package:flutter/material.dart';
 
 import 'display_picture_screen.dart';
 
-// Camera preview screen that allows users to take a picture as well
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({super.key});
 

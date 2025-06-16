@@ -1,5 +1,7 @@
 // lib/views/display_picture_screen.dart
 
+// Displays captured picture and provides options to retake or use the picture
+
 // Imports
 import 'dart:io' show File;
 
@@ -9,7 +11,6 @@ import 'package:flutter/material.dart';
 // import 'dart:typed_data';
 // import 'package:flutter/foundation.dart' show kIsWeb;
 
-// Widget to display picture taken
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
 

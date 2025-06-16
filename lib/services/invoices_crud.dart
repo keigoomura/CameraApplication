@@ -1,6 +1,9 @@
+// lib/services/invoices_crud.dart
+
 import '../models/invoices.dart';
 import 'db_provider.dart';
 
+/// CRUD operations for Invoices
 class InvoicesCrud {
   
   // Create and insert a new Invoice

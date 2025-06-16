@@ -1,5 +1,8 @@
 // lib/views/submission_confirmation_screen.dart
 
+// Submission confirmation screen that is displayed after a user submits a form
+// The details of the check and its associated invoices, company, and image are displayed
+
 // Imports
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -55,7 +58,7 @@ class SubmissionConfirmationPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate back to the invoice form
+                  // Navigate back to the form
                   Navigator.push(
                     context,
                     MaterialPageRoute(

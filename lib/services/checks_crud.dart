@@ -1,6 +1,9 @@
+// lib/services/checks_crud.dart
+
 import '../models/checks.dart';
 import 'db_provider.dart';
 
+/// CRUD operations for Checks
 class ChecksCrud {
 
   // Create and insert a new Check
