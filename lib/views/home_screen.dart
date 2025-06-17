@@ -10,42 +10,44 @@ import 'companies_list.dart';
 import 'checks_list.dart';
 import 'invoice_list.dart';
 import 'search_page.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.username});
+
+  final String username;
+
+  void _logout(BuildContext context) {
+    // Pop all routes and go back to the login screen
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Welcome, $username!'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () => _logout(context),
+          ),
+        ], 
+      ),
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Make animated Welcome text 
-              AnimatedTextKit(
-                animatedTexts: [
-                  ColorizeAnimatedText(
-                    'Welcome to Keigo\'s Camera App!',
-                    textStyle: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    colors: [
-                      Colors.purple,
-                      Colors.blue,
-                      Colors.yellow,
-                      Colors.red,
-                    ],
-                  ),
-                ],
-                isRepeatingAnimation: true,
-                repeatForever: true,        
-              ),
-              const SizedBox(height: 32),
-
               // Add Invoice Form Button
               ElevatedButton.icon(
                 onPressed: () {

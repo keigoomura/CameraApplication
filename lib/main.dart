@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'views/home_screen.dart';
+import 'views/login_screen.dart';
 
 Future<void> main() async {
   // Initialize the camera plugin
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 54, 191, 127)),
         ),
       title: 'Telaeris Checks and Invoices',
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }
