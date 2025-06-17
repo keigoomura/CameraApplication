@@ -40,129 +40,58 @@ class HomeScreen extends StatelessWidget {
         ], 
       ),
 
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Dashboard",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: [
+                  _buildDashboardCard(context, Icons.add, 'Submit Check', const SubmitFormPage()),
+                  _buildDashboardCard(context, Icons.table_chart, 'View Data', const ViewDataPage()),
+                  _buildDashboardCard(context, Icons.business, 'Companies', const CompaniesListPage()),
+                  _buildDashboardCard(context, Icons.check, 'Checks', const ChecksListPage()),
+                  _buildDashboardCard(context, Icons.receipt_long, 'Invoices', const InvoicesListPage()),
+                  _buildDashboardCard(context, Icons.search, 'Search', const SearchPage()),
+                  //_buildDashboardCard(context, Icons.person, 'Profile', ProfilePage(username: username)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _buildDashboardCard(BuildContext context, IconData icon, String title, Widget destinationPage) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => destinationPage));
+      },
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        color: Colors.white,
+        child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Add Invoice Form Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SubmitFormPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('Submit a New Check'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Add View Tables Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ViewDataPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.table_chart),
-                label: const Text('View Data'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Add Companies List Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CompaniesListPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.business),
-                label: const Text('View Companies'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Add Checks List Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChecksListPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.check),
-                label: const Text('View Checks'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-              // Add Invoices List Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const InvoicesListPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.receipt),
-                label: const Text('View Invoices'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-              // Search Page Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SearchPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.search),
-                label: const Text('Search'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-              ),
+              Icon(icon, size: 40, color: Colors.indigo),
+              const SizedBox(height: 12),
+              Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
       ),
     );
   }
-}
