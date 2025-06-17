@@ -10,7 +10,7 @@ import '../services/db_provider.dart';
 class InvoiceDisplayData {
   final Invoices invoice;
   final String companyName;
-  final List<String> checkNumbers;
+  final List<int> checkNumbers;
 
   InvoiceDisplayData({
     required this.invoice,
@@ -28,6 +28,9 @@ class InvoicesListPage extends StatefulWidget {
 
 class _InvoicesListPageState extends State<InvoicesListPage> {
   late Future<List<InvoiceDisplayData>> _invoicesDisplayData;
+
+  // For sorting options
+  String _selectedSort = 'Invoice Number (Asc)';
 
   @override
   void initState() {
@@ -50,9 +53,9 @@ class _InvoicesListPageState extends State<InvoicesListPage> {
       );
 
       final checkNumbers = checks
-          .where((check) => check != null)
-          .map((check) => check!.number.toString())
-          .toList();
+        .where((check) => check != null)
+        .map((check) => check!.number)
+        .toList();
 
       enrichedInvoices.add(
         InvoiceDisplayData(
@@ -64,6 +67,40 @@ class _InvoicesListPageState extends State<InvoicesListPage> {
     }
 
     return enrichedInvoices;
+  }
+
+  // Sort invoices based on the selected option
+  void _sortInvoices(List<InvoiceDisplayData> invoices) {
+    switch (_selectedSort) {
+      case 'Invoice Number (Asc)':
+        invoices.sort((a, b) => a.invoice.number.compareTo(b.invoice.number));
+        break;
+      case 'Invoice Number (Desc)':
+        invoices.sort((a, b) => b.invoice.number.compareTo(a.invoice.number)); 
+        break;
+      case 'Company Name (A–Z)':
+        invoices.sort((a, b) => a.companyName.compareTo(b.companyName));
+        break;
+      case 'Company Name (Z–A)':
+        invoices.sort((a, b) => b.companyName.compareTo(a.companyName));
+        break;
+      case 'Check Number (Asc)':
+        invoices.sort((a, b) {
+          final aMin = a.checkNumbers.isNotEmpty ? a.checkNumbers.reduce((x, y) => x < y ? x : y) : double.infinity.toInt();
+          final bMin = b.checkNumbers.isNotEmpty ? b.checkNumbers.reduce((x, y) => x < y ? x : y) : double.infinity.toInt();
+          return aMin.compareTo(bMin);
+        });
+        break;
+
+      case 'Check Number (Desc)':
+        invoices.sort((a, b) {
+          final aMax = a.checkNumbers.isNotEmpty ? a.checkNumbers.reduce((x, y) => x > y ? x : y) : -1;
+          final bMax = b.checkNumbers.isNotEmpty ? b.checkNumbers.reduce((x, y) => x > y ? x : y) : -1;
+          return bMax.compareTo(aMax);
+        });
+        break;
+
+    }
   }
 
   @override
@@ -83,28 +120,56 @@ class _InvoicesListPageState extends State<InvoicesListPage> {
             return const Center(child: Text("No invoices found."));
           } 
           else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(Colors.grey[300]),
-                  columns: const [
-                    DataColumn(label: Text('Invoice #', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Company', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Check #', style: TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                  rows: snapshot.data!.map((entry) {
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(entry.invoice.number.toString())),
-                        DataCell(Text(entry.companyName)),
-                        DataCell(Text(entry.checkNumbers.join(', '))),
-                      ],
-                    );
-                  }).toList(),
+            final invoices = snapshot.data!;
+            _sortInvoices(invoices);
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                    value: _selectedSort,
+                    items: const [
+                      DropdownMenuItem(value: 'Invoice Number (Asc)', child: Text('Invoice Number (Asc)')),
+                      DropdownMenuItem(value: 'Invoice Number (Desc)', child: Text('Invoice Number (Desc)')),
+                      DropdownMenuItem(value: 'Company Name (A–Z)', child: Text('Company Name (A–Z)')),
+                      DropdownMenuItem(value: 'Company Name (Z–A)', child: Text('Company Name (Z–A)')),
+                      DropdownMenuItem(value: 'Check Number (Asc)', child: Text('Check Number (Asc)')),
+                      DropdownMenuItem(value: 'Check Number (Desc)', child: Text('Check Number (Desc)')),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSort = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        headingRowColor: WidgetStateProperty.all(Colors.grey[300]),
+                        columns: const [
+                          DataColumn(label: Text('Invoice #', style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(label: Text('Company', style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(label: Text('Check #', style: TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                        rows: snapshot.data!.map((entry) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(entry.invoice.number.toString())),
+                              DataCell(Text(entry.companyName)),
+                              DataCell(Text(entry.checkNumbers.join(', '))),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  )
+                ),
+              ],
             );
           }
         },

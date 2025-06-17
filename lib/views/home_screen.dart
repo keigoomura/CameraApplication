@@ -2,8 +2,6 @@
 
 // Imports
 import 'package:flutter/material.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-
 import 'submit_form_screen.dart'; 
 import 'view_data_screen.dart';
 import 'companies_list.dart';

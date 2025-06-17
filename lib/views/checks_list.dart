@@ -31,6 +31,9 @@ class ChecksListPage extends StatefulWidget {
 class ChecksListPageState extends State<ChecksListPage> {
   late Future<List<CheckDisplayData>> _checksDisplayData;
 
+  // For sorting options
+  String _selectedSort = 'Newest First';
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +70,31 @@ class ChecksListPageState extends State<ChecksListPage> {
     return enrichedChecks;
   }
 
+  // Sort checks based on selected option
+  void _sortChecks(List<CheckDisplayData> checks) {
+    switch (_selectedSort) {
+      case 'Newest First':
+        checks.sort((a, b) => b.check.createdAt.compareTo(a.check.createdAt));
+        break;
+      case 'Oldest First':
+        checks.sort((a, b) => a.check.createdAt.compareTo(b.check.createdAt));
+        break;
+      case 'Check Number (Asc)':
+        checks.sort((a, b) => a.check.number.compareTo(b.check.number));
+        break;
+      case 'Check Number (Desc)':
+        checks.sort((a, b) => b.check.number.compareTo(a.check.number));
+        break;
+      case 'Company Name (A–Z)':
+        checks.sort((a, b) => a.companyName.compareTo(b.companyName));
+        break;
+      case 'Company Name (Z–A)':
+        checks.sort((a, b) => b.companyName.compareTo(a.companyName));
+        break;
+    }
+  }
+
+
   // Show image in a dialog
   void _showImageDialog(String imagePath) {
     showDialog(
@@ -97,40 +125,68 @@ class ChecksListPageState extends State<ChecksListPage> {
             return const Center(child: Text('No checks found.'));
           } 
           else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(Colors.grey[300]),
-                  columns: const [
-                    DataColumn(label: Text('Date', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Company', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Check #', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Invoices', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Image', style: TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                  rows: snapshot.data!.map((entry) {
-                    return DataRow(cells: [
-                      DataCell(Text(entry.check.createdAt.toLocal().toString().split('.')[0],),),
-                      DataCell(Text(entry.companyName)),
-                      DataCell(Text(entry.check.number.toString())),
-                      DataCell(Text(entry.invoiceNumbers.join(', '))),
-                      DataCell(entry.check.image.isNotEmpty
-                          ? GestureDetector(
-                                onTap: () => _showImageDialog(entry.check.image),
-                                child: Image.file(
-                                  File(entry.check.image),
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : const Text('No Image'),),
-                    ]);
-                  }).toList(),
+            final checks = snapshot.data!;
+            _sortChecks(checks);
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                    value: _selectedSort,
+                    items: const [
+                      DropdownMenuItem(value: 'Newest First', child: Text('Newest First')),
+                      DropdownMenuItem(value: 'Oldest First', child: Text('Oldest First')),
+                      DropdownMenuItem(value: 'Check Number (Asc)', child: Text('Check # Ascending')),
+                      DropdownMenuItem(value: 'Check Number (Desc)', child: Text('Check # Descending')),
+                      DropdownMenuItem(value: 'Company Name (A–Z)', child: Text('Company Name (A–Z)')),
+                      DropdownMenuItem(value: 'Company Name (Z–A)', child: Text('Company Name (Z–A)')),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSort = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        headingRowColor: WidgetStateProperty.all(Colors.grey[300]),
+                        columns: const [
+                          DataColumn(label: Text('Date')),
+                          DataColumn(label: Text('Company')),
+                          DataColumn(label: Text('Check #')),
+                          DataColumn(label: Text('Invoices')),
+                          DataColumn(label: Text('Image')),
+                        ],
+                        rows: checks.map((entry) {
+                          return DataRow(cells: [
+                            DataCell(Text(entry.check.createdAt.toString())),
+                            DataCell(Text(entry.companyName)),
+                            DataCell(Text(entry.check.number.toString())),
+                            DataCell(Text(entry.invoiceNumbers.join(', '))),
+                            DataCell(entry.check.image.isNotEmpty
+                                ? GestureDetector(
+                                    onTap: () => _showImageDialog(entry.check.image),
+                                    child: Image.file(
+                                      File(entry.check.image),
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : const Text('No Image')),
+                          ]);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             );
           }
         },
