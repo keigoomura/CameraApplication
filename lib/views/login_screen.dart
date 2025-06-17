@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'create_account_screen.dart';
 import 'home_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   String? _errorText;
+
+  bool _hidePassword = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _hidePassword = !_hidePassword;
+    });
+  }
 
   void _login() {
     final username = _usernameController.text.trim();
@@ -47,6 +56,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void _goToForgotPassword() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +81,16 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _hidePassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
+              ),
+              obscureText: _hidePassword,
             ),
 
             const SizedBox(height: 24),
@@ -79,6 +103,12 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 12),
               Text(_errorText!, style: const TextStyle(color: Colors.red)),
             ],
+
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: _goToForgotPassword,
+              child: const Text("Forgot Password?"),
+            ),
 
             const SizedBox(height: 16),
             TextButton(

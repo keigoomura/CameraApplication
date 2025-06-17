@@ -1,18 +1,16 @@
-// lib/views/register_screen.dart
-
-// Allow users to create a new account if they do not have one yet
+// lib/views/forgot_password_screen.dart
 
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'login_screen.dart';
 
-class CreateAccountScreen extends StatefulWidget {
-  const CreateAccountScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
@@ -33,15 +31,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     });
   }
 
-  void _register() {
+  void _resetPassword() {
     final username = _usernameController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
     // Validate inputs
-    if(username.isEmpty) {
+    if (username.isEmpty) {
       setState(() {
-        _errorText = "Username cannot be empty";
+        _errorText = 'Please enter your username';
       });
       return;
     }
@@ -73,27 +71,31 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       _errorText = null;
     });
 
-    // TODO: Add registration logic and confirmation of account creation
+    // TODO: Add real password reset logic and confirmation of password reset
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(username: username)),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: AppBar(title: const Text('Forgot Password')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Create a New Account", style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 32),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Enter your username to reset password', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Username'),
+              keyboardType: TextInputType.text,
             ),
 
             const SizedBox(height: 16),
@@ -110,7 +112,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               obscureText: _hidePassword,
             ),
-            
+
             const SizedBox(height: 16),
             TextField(
               controller: _confirmPasswordController,
@@ -125,16 +127,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               obscureText: _hideConfirmPassword,
             ),
-            if (_errorText != null) ...[
-              const SizedBox(height: 12),
-              Text(_errorText!, style: const TextStyle(color: Colors.red)),
-            ],
 
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _register,
-              child: const Text('Create Account'),
+              onPressed: _resetPassword,
+              child: const Text('Reset Password'),
             ),
+
+            if (_errorText != null) ...[
+              const SizedBox(height: 12),
+              Text(_errorText!, style: const TextStyle(color: Colors.red)),
+            ]
           ],
         ),
       ),

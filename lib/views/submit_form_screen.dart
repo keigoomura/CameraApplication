@@ -16,6 +16,7 @@ import '../models/check_invoices.dart';
 import '../services/db_provider.dart';
 
 import 'take_picture_screen.dart';
+import 'home_screen.dart';
 
 class SubmitFormPage extends StatefulWidget {
   const SubmitFormPage({super.key});
@@ -34,14 +35,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Back to Home'), 
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.popUntil(context, (route) => route.isFirst); // Go back to home
-          },
-        )
-      ),
+      appBar: AppBar(title: const Text('Back to Home')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
