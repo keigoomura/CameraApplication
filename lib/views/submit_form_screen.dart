@@ -175,21 +175,36 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                   );
                   final checkId = await db.checks.createCheck(check);
 
-                  // Insert Invoice
-                  final invoice = Invoices(
-                    number: checkNumber,
-                    companyId: createdCompany.id!,
-                    createdAt: DateTime.now(),
-                  );
-                  final invoiceId = await db.invoices.createInvoice(invoice);
+                  // Insert Invoice and CheckInvoice for each invoice number
 
-                  // Insert CheckInvoices
-                  final checkInvoice = CheckInvoices(
-                    checkId: checkId.id!,
-                    invoiceId: invoiceId.id!,
-                  );
-                  await db.checkInvoices.createCheckInvoice(checkInvoice);
+                  // Parse invoice numbers from the input text (could be comma or space separated)
+                  final invoiceStrings = invoiceText
+                      .split(RegExp(r'[,\s]+'))
+                      .map((s) => s.trim())
+                      .where((s) => s.isNotEmpty)
+                      .toList();
 
+                  // For each invoice number, create an Invoice and a CheckInvoice
+                  for (var invoiceStr in invoiceStrings) {
+                    final invoiceNumber = int.tryParse(invoiceStr);
+                    if (invoiceNumber == null) {
+                      debugPrint('Invalid invoice number: $invoiceStr');
+                      continue;
+                    }
+
+                    final invoice = Invoices(
+                      number: invoiceNumber,
+                      companyId: createdCompany.id!,
+                      createdAt: DateTime.now(),
+                    );
+                    final invoiceId = await db.invoices.createInvoice(invoice);
+
+                    final checkInvoice = CheckInvoices(
+                      checkId: checkId.id!,
+                      invoiceId: invoiceId.id!,
+                    );
+                    await db.checkInvoices.createCheckInvoice(checkInvoice);
+                  }
 
                   // Show success message and navigate to confirmation page
                   if (mounted) {
@@ -199,7 +214,7 @@ class SubmitFormPageState extends State<SubmitFormPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SubmissionConfirmationPage(invoice: invoice, imagePath: _imagePath ?? ''),
+                        builder: (context) => SubmissionConfirmationPage(check: check, invoices: invoiceStrings),
                       ),
                     );
                   }

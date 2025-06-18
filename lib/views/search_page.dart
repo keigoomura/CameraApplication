@@ -188,7 +188,7 @@ class SearchPageState extends State<SearchPage> {
                 if (_filteredCompanies.isEmpty &&
                     _filteredChecks.isEmpty &&
                     _filteredInvoices.isEmpty)
-                  const Center(child: Text("No results found.")),
+                  const Center(child: Text("No results found.", style: TextStyle(fontSize: 16))),
               ],
             ),
           ),

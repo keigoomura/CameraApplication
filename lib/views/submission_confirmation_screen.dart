@@ -6,14 +6,15 @@
 // Imports
 import 'package:flutter/material.dart';
 import 'dart:io';
-import '../models/invoices.dart';
+import '../models/checks.dart';
 import 'submit_form_screen.dart';
+import 'home_screen.dart';
 
 class SubmissionConfirmationPage extends StatelessWidget {
-  final Invoices invoice;
-  final String imagePath;
+  final Checks check;
+  final List<String> invoices;
 
-  const SubmissionConfirmationPage({super.key, required this.invoice, required this.imagePath});
+  const SubmissionConfirmationPage({super.key, required this.check, required this.invoices});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class SubmissionConfirmationPage extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.file(
-                  File(imagePath),
+                  File(check.image),
                   width: 250,
                   height: 250,
                   fit: BoxFit.cover,
@@ -44,11 +45,13 @@ class SubmissionConfirmationPage extends StatelessWidget {
                 ),
               ),
             ),
-            Text('Invoice Number: ${invoice.number}', style: TextStyle(fontSize: 18)),
+            Text('Check Number: ${check.number}', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
-            Text('Company ID: ${invoice.companyId}', style: TextStyle(fontSize: 18)),
+            Text('Invoice Numbers: ${invoices.join(', ')}', style: TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
-            Text('Created At: ${invoice.createdAt}', style: TextStyle(fontSize: 18)),
+            Text('Company Name: ${check.companyId}', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text('Created At: ${check.createdAt}', style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
             const Text(
               'Your invoice has been successfully submitted.',
@@ -75,7 +78,11 @@ class SubmissionConfirmationPage extends StatelessWidget {
                 onPressed: 
                 () {
                   // Go back to the home screen
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen(username: 'User')),
+                    (Route<dynamic> route) => false,
+                  );
                 },
                 child: const Text('Back to Home'),
               ),

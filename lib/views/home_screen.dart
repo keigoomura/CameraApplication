@@ -12,9 +12,9 @@ import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
 
-  const HomeScreen({super.key, required this.username});
+  const HomeScreen({super.key, this.username});
 
-  final String username;
+  final String? username;
 
   void _logout(BuildContext context) {
     // Pop all routes and go back to the login screen
