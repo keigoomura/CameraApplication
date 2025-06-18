@@ -1,4 +1,4 @@
-package com.example.camera_application
+package com.telaeris.crm
 
 import io.flutter.embedding.android.FlutterActivity
 
