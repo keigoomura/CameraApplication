@@ -27,7 +27,6 @@ class AuthService {
           _redirectUrl,
           issuer: _issuer,
           scopes: _scopes,
-          responseMode: 'query',
         ),
       );
 
