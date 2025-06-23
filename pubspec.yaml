@@ -33,6 +33,8 @@ dependencies:
   camera: ^0.10.5+2
   animated_text_kit: ^4.2.2
   sqflite: ^2.3.2
+  flutter_appauth: ^6.0.2
+  flutter_secure_storage: ^9.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
