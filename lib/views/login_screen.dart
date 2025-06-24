@@ -36,47 +36,64 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorText = null;
     });
 
-    final success = await _authService.login();
+    try{
+      final success = await _authService.login();
+   
+      if (success) {
+        if (!mounted) return;
 
-    setState(() {
-      _isLoading = false;
-    });
+        // If login is successful, navigate to the home screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(showLoginSuccess: true),
+          ),
+        );
+      } 
+      else {
+        setState(() {
+          _errorText = "An error occurred during login. Please try again.";
+        });
+      }
 
-    
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(username: 'OAuth User'),
-        ),
-      );
-    } 
-    else {
-      setState(() {
-        _errorText = "Login failed. Please try again.";
-      });
+      // final username = _usernameController.text.trim();
+      // final password = _passwordController.text;
+
+      // if (username.isEmpty || password.isEmpty) {
+      //   setState(() {
+      //     _errorText = "Please enter both username and password";
+      //   });
+      //   return;
+      // }
+
+      // Clear error
+      // setState(() {
+      //   _errorText = null;
+      // });
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomeScreen(username: username)),
+      // );
     }
 
-    // final username = _usernameController.text.trim();
-    // final password = _passwordController.text;
+    catch(e){
+      setState(() {
+        if (e.toString().contains('User cancelled') || e.toString().contains('user_cancelled')) {
+          _errorText = "Login canceled.";
+        } 
+        else{
+          _errorText = "An error occurred during login. Please try again.";
+        }
+      });
+      print('Login error: $e'); // Log the error for debugging
+    }
 
-    // // TODO: Add real login logic, but for now, go to the home screen
-    // if (username.isEmpty || password.isEmpty) {
-    //   setState(() {
-    //     _errorText = "Please enter both username and password";
-    //   });
-    //   return;
-    // }
-
-    // Clear error
-    // setState(() {
-    //   _errorText = null;
-    // });
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => HomeScreen(username: username)),
-    // );
+    finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   // void _goToCreateAccount() {
