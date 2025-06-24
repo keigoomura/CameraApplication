@@ -39,7 +39,6 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // manifestPlaceholders.put("appAuthRedirectScheme", "com.googleusercontent.apps.668765901266")
         manifestPlaceholders["appAuthRedirectScheme"] = "com.googleusercontent.apps.668765901266-k2i109ou4b5n46jphtocgp4gup5161l0"
 
     }

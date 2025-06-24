@@ -40,7 +40,61 @@ class AuthService {
     catch (e, stackTrace) {
       print('OAuth login failed: $e');
       print(stackTrace);
+      rethrow; // Re-throw the exception for handling in login_screen.dart
     }
     return false;
+  }
+
+  Future<bool> refreshToken() async {
+    try {
+      final refreshToken = await _secureStorage.read(key: 'refresh_token');
+      if (refreshToken == null) return false;
+
+      final TokenResponse? result = await appAuth.token(
+        TokenRequest(
+          _clientId,
+          _redirectUrl,
+          refreshToken: refreshToken,
+          issuer: _issuer,
+          scopes: _scopes,
+        ),
+      );
+
+      if (result != null) {
+        await _secureStorage.write(key: 'access_token', value: result.accessToken);
+        await _secureStorage.write(key: 'id_token', value: result.idToken);
+        await _secureStorage.write(key: 'refresh_token', value: result.refreshToken ?? refreshToken);
+        return true;
+      }
+    } 
+    
+    catch (e, stackTrace) {
+      print('Token refresh failed: $e');
+      print(stackTrace);
+    }
+    return false;
+  }
+
+  Future<void> logout() async {
+    try {
+      // Commenting out end session request because signing out of google accounts is not needed
+      // final idToken = await _secureStorage.read(key: 'id_token');
+      // if (idToken == null) return;
+
+      // await appAuth.endSession(
+      //   EndSessionRequest(
+      //     idTokenHint: idToken,
+      //     postLogoutRedirectUrl: _redirectUrl,
+      //     issuer: _issuer,
+      //   ),
+      // );
+
+      await _secureStorage.deleteAll();
+    } 
+
+    catch (e, stackTrace) {
+      print('Logout failed: $e');
+      print(stackTrace);
+    }
   }
 }
