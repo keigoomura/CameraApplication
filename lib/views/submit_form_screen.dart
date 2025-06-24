@@ -10,12 +10,12 @@ import 'submission_confirmation_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/checks.dart';
 import '../models/companies.dart';
-
 import '../models/invoices.dart';
 import '../models/check_invoices.dart';
 import '../services/db_provider.dart';
 
 import 'take_picture_screen.dart';
+import 'home_screen.dart';
 
 class SubmitFormPage extends StatefulWidget {
   const SubmitFormPage({super.key});
@@ -34,7 +34,20 @@ class SubmitFormPageState extends State<SubmitFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Back to Home')),
+      appBar: AppBar(
+        leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            (Route<dynamic> route) => false,
+          );
+        },
+      ),
+
+        title: const Text('Back to Home')
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
