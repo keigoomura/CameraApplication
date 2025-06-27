@@ -36,14 +36,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   void _logout(BuildContext context) async {
-    await AuthService().logout();
+    await AuthService().isFreshToken();
+    // await AuthService().logout();
     print("Back from logout redirect"); 
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (Route<dynamic> route) => false,
-    );
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+    //   (Route<dynamic> route) => false,
+    // );
   }
 
   @override

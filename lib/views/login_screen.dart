@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _errorText = "An error occurred during login. Please try again.";
         }
       });
-      print('Login error: $e'); // Log the error for debugging
+      debugPrint('Login error: $e'); // Log the error for debugging
     }
 
     finally {

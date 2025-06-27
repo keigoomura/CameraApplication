@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart'; // for debugPrint
 
 class AuthService {
   FlutterAppAuth appAuth = FlutterAppAuth();
@@ -30,22 +31,50 @@ class AuthService {
         ),
       );
 
-      if (result != null) {
+      if( result == null) {
+        debugPrint('Authorization failed or cancelled');
+        return false;
+      }
+
+      else {
         await _secureStorage.write(key: 'access_token', value: result.accessToken);
         await _secureStorage.write(key: 'id_token', value: result.idToken);
+        await _secureStorage.write(key: 'refresh_token', value: result.refreshToken);
+        final expiresAt = DateTime.now().add(const Duration(seconds: 3600));
+        await _secureStorage.write(key: 'access_token_expiration', value: expiresAt.toIso8601String());
+
+        debugPrint('Successfully logged in');
         return true;
       }
     } 
     
     catch (e, stackTrace) {
-      print('OAuth login failed: $e');
+      debugPrint('OAuth login failed: $e');
       print(stackTrace);
       rethrow; // Re-throw the exception for handling in login_screen.dart
     }
-    return false;
   }
 
-  Future<bool> refreshToken() async {
+  // Check if access token is expired
+  Future<bool> isAccessTokenExpired() async {
+    final expiration = await _secureStorage.read(key: 'access_token_expiration');
+
+    if (expiration == null) {
+      debugPrint('No access token expiration found');
+      return true; 
+    }
+
+    final expirationTime = DateTime.tryParse(expiration);
+    if (expirationTime == null) {
+      debugPrint('Invalid access token expiration format');
+      return true;
+    }
+    debugPrint('Access token expiration time: $expirationTime');
+    return DateTime.now().isAfter(expirationTime);
+  }
+
+
+  Future<bool> _refreshToken() async {
     try {
       final refreshToken = await _secureStorage.read(key: 'refresh_token');
       if (refreshToken == null) return false;
@@ -60,20 +89,36 @@ class AuthService {
         ),
       );
 
-      if (result != null) {
+      if (result != null && result.accessToken != null) {
         await _secureStorage.write(key: 'access_token', value: result.accessToken);
         await _secureStorage.write(key: 'id_token', value: result.idToken);
         await _secureStorage.write(key: 'refresh_token', value: result.refreshToken ?? refreshToken);
+        final newExpiresAt = DateTime.now().add(const Duration(seconds: 3600));
+        await _secureStorage.write(key: 'access_token_expiration', value: newExpiresAt.toIso8601String());
+        
+        debugPrint('Access Token refreshed');
         return true;
       }
     } 
     
     catch (e, stackTrace) {
-      print('Token refresh failed: $e');
+      debugPrint('Token refresh failed: $e');
       print(stackTrace);
     }
     return false;
   }
+
+  // Creates new refresh token if access token is expired
+  Future<bool> isFreshToken() async {
+    final isExpired = await isAccessTokenExpired();
+    if (isExpired) {
+      debugPrint('Access token is expired, refreshing...');
+      return await _refreshToken();
+    }
+    debugPrint('Access token is still valid');
+    return true;
+  }
+
 
   Future<void> logout() async {
     try {
@@ -89,12 +134,34 @@ class AuthService {
       //   ),
       // );
 
+    
       await _secureStorage.deleteAll();
-    } 
+      debugPrint("User logged out and secure storage cleared.");
+    }
 
     catch (e, stackTrace) {
-      print('Logout failed: $e');
+      debugPrint('Logout failed: $e');
       print(stackTrace);
+    }
+  }
+
+  // Manual simulation for testing token refresh flow
+  Future<void> simulateRefreshFlow() async {
+    final oldAccessToken = await _secureStorage.read(key: 'access_token');
+    final refreshToken = await _secureStorage.read(key: 'refresh_token');
+
+    if (oldAccessToken == null || refreshToken == null) {
+      debugPrint("No token or refresh token found. Please login first.");
+      return;
+    }
+
+    final success = await _refreshToken();
+
+    if (success) {
+      final newAccessToken = await _secureStorage.read(key: 'access_token');
+      debugPrint(oldAccessToken != newAccessToken
+          ? "Token was successfully refreshed."
+          : "Token unchanged (server may have returned same token).");
     }
   }
 }
